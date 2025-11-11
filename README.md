@@ -42,6 +42,12 @@ Free web version with introduction chapters and tutorial overview.
 
 This book is written in Leanpub Flavoured Markdown and stored in the `manuscript/` directory.
 
+**Branch Strategy:**
+- `preview` - Draft content, work in progress, Leanpub testing
+- `main` - Published content, stable releases, GitHub Pages
+
+See [PUBLISHING-WORKFLOW.md](PUBLISHING-WORKFLOW.md) for detailed publishing process.
+
 ```bash
 # Clone the repository
 git clone https://github.com/SecurityRonin/maintainable-vibe-coding.git
@@ -49,13 +55,16 @@ cd maintainable-vibe-coding
 
 # View manuscript files
 ls manuscript/
+
+# Work on preview branch
+git checkout preview
 ```
 
-To publish your own version:
-1. Create a Leanpub account
-2. Create a new book
-3. Connect to this GitHub repository
-4. Leanpub will build PDF/EPUB/MOBI from `manuscript/`
+**For authors/contributors:**
+- Write on `preview` branch
+- Test with Leanpub Preview
+- Merge to `main` when ready to publish
+- See [LEANPUB-SETUP.md](LEANPUB-SETUP.md) and [PUBLISHING-WORKFLOW.md](PUBLISHING-WORKFLOW.md)
 
 ## 📚 Book Structure
 
