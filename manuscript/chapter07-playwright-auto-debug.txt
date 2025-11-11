@@ -1,515 +1,426 @@
-# Playwright Auto-Debugging
+# Auto-Debugging E2E Tests with Claude Code
 
-E2E tests fail. A lot. The difference between frustration and productivity is good debugging tools. Playwright has the best debugging experience of any testing framework.
+E2E tests fail. That's normal. What matters is how quickly you get them passing again. With Claude Code, debugging is a conversation, not a detective investigation.
 
-## The Problem with E2E Debugging
+## The Old Way vs The Vibe Coding Way
 
-**Why E2E tests are hard to debug:**
-
-- **Black box:** Test runs in real browser, can't see what's happening
-- **Timing issues:** Failures happen fast, hard to catch
-- **Flaky:** Works locally, fails in CI
-- **Complex:** Many moving parts (UI + API + database)
-
-**Traditional approach:**
+**Traditional E2E debugging:**
 1. Test fails
-2. Add `console.log()` everywhere
-3. Add `await page.screenshot()`
+2. Read cryptic error message
+3. Google Playwright docs
+4. Add `console.log()` statements
+5. Re-run test
+6. Try different selector
+7. Re-run test
+8. Add arbitrary timeout
+9. Re-run test
+10. Give up after 2 hours
+
+**Vibe coding E2E debugging:**
+1. Test fails
+2. Copy error to Claude Code
+3. Claude fixes it
 4. Re-run test
-5. Repeat 10 times
-6. Give up and skip test
+5. Done in 5 minutes
 
-**Playwright approach:**
-1. Test fails
-2. Open Trace Viewer
-3. See exactly what happened
-4. Fix immediately
+## When Tests Fail: The Workflow
 
-## Playwright Inspector
-
-**The fastest way to debug:** Run with `--debug` flag.
+### Step 1: Run the Test
 
 {lang=bash}
 ```
-npx playwright test --debug
+npx playwright test
 ```
 
-**What happens:**
-- Test pauses at first action
-- Inspector window opens showing:
-  - Current step highlighted in code
-  - DOM snapshot
-  - Console logs
-  - Network requests
+### Step 2: Get the Error
 
-**Navigation:**
-- **Step Over** - Run next action
-- **Step Into** - Debug into function
-- **Resume** - Run until next breakpoint
-- **Pause** - Pause execution
+Test output shows:
 
-**Setting breakpoints:**
-
-{lang=typescript}
 ```
-test('debug login flow', async ({ page }) => {
-  await page.goto('/login');
+✓ auth/login.spec.ts:5:7 › user can sign in
+✗ tasks/create.spec.ts:10:7 › user creates task (5.2s)
 
-  // Pause test here to inspect
-  await page.pause();
-
-  await page.getByLabel('Email').fill('test@example.com');
-  await page.getByLabel('Password').fill('password123');
-  await page.getByRole('button', { name: 'Sign In' }).click();
-
-  await expect(page).toHaveURL('/dashboard');
-});
+Error: Timeout 30000ms exceeded waiting for getByRole('button', { name: 'Create' })
 ```
 
-**When test hits `page.pause()`:**
-- Inspector opens
-- Test execution stops
-- You can inspect DOM, console, network
-- Click "Resume" to continue
+### Step 3: Tell Claude Code
 
-## Trace Viewer (The Secret Weapon)
+**You:** "The 'create task' test is failing. Here's the error:
 
-**The most powerful debugging tool:** Trace Viewer records everything.
-
-**Enable traces:**
-
-{lang=typescript}
 ```
-// playwright.config.ts
-export default defineConfig({
-  use: {
-    // Record trace on first retry (when test fails)
-    trace: 'on-first-retry',
+Error: Timeout 30000ms exceeded waiting for getByRole('button', { name: 'Create' })
+```
+"
 
-    // Or always record (slower, but comprehensive)
-    // trace: 'on',
+### Step 4: Claude Debugs and Fixes
 
-    // Screenshots on failure
-    screenshot: 'only-on-failure',
+**Claude Code:**
+```
+The button selector is timing out. Let me check the test and your current UI.
 
-    // Video on failure
-    video: 'retain-on-failure',
-  },
-});
+Looking at your components, I see the button text changed from "Create" to "Create Task" in the last commit.
+
+I'll update the test:
+
+[Shows the fix]
+
+Also, I'll add a wait for the form to be fully loaded before clicking:
+
+[Shows the additional fix]
+
+Try running the test again.
 ```
 
-**Generate trace manually:**
+### Step 5: Verify
 
 {lang=bash}
 ```
-npx playwright test --trace on
+npx playwright test tasks/create.spec.ts
 ```
 
-**Open Trace Viewer:**
+Test passes → Done.
+
+Test still fails → Go back to Step 2.
+
+## Common Failures and How Claude Fixes Them
+
+### Failure 1: Element Not Found
+
+**Error:**
+```
+Error: locator.click: Target closed
+```
+
+**You:** "Test failed with 'Target closed'. What does that mean?"
+
+**Claude Code:**
+```
+This usually means the page navigated away before the action completed.
+
+Looking at your test, you're clicking "Create" which triggers a navigation,
+but the test tries to interact with the page before the navigation finishes.
+
+I'll add a wait for the navigation:
+
+await page.getByRole('button', { name: 'Create' }).click();
+await page.waitForURL('/dashboard');  // Wait for navigation
+
+Then we can assert on the new page.
+```
+
+### Failure 2: Flaky Test (Sometimes Passes, Sometimes Fails)
+
+**You:** "This test passes locally but fails in CI sometimes."
+
+**Claude Code:**
+```
+Flaky tests are usually race conditions. Let me analyze your test.
+
+I see you're clicking "Load Tasks" and immediately checking if tasks appear.
+The API call hasn't returned yet in CI (slower machine).
+
+I'll add a proper wait for the API response:
+
+await page.getByRole('button', { name: 'Load Tasks' }).click();
+
+// Wait for API call to complete
+await page.waitForResponse(resp =>
+  resp.url().includes('/api/tasks') &&
+  resp.status() === 200
+);
+
+// Now assert
+await expect(page.getByText('Task 1')).toBeVisible();
+
+This eliminates the race condition.
+```
+
+### Failure 3: Test Passes Locally, Fails in CI
+
+**You:** "All tests pass on my machine but failing in GitHub Actions."
+
+**Claude Code:**
+```
+Let me check the CI logs...
+
+I see the error is "ECONNREFUSED" - the dev server isn't starting in CI.
+
+Looking at your playwright.config.ts, the webServer timeout is too short.
+
+I'll update the config:
+
+webServer: {
+  command: 'npm run dev',
+  url: 'http://localhost:3000',
+  timeout: 120 * 1000,  // Increased from 60s to 120s
+  reuseExistingServer: !process.env.CI,
+},
+
+CI machines are slower, so they need more time to start the server.
+```
+
+### Failure 4: Authentication Issues
+
+**You:** "Test can't log in. Getting '401 Unauthorized'."
+
+**Claude Code:**
+```
+The test is trying to log in but Supabase is rejecting the credentials.
+
+Are you using a test Supabase project in CI? Let me check your env vars...
+
+I see process.env.NEXT_PUBLIC_SUPABASE_URL in the test but it's not set in CI.
+
+I'll add to your .github/workflows/playwright.yml:
+
+env:
+  NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
+
+And I'll create a fixture that ensures the test user exists before each test.
+```
+
+## Using Playwright's Debug Tools (Through Claude)
+
+You don't need to learn these tools, but Claude Code uses them. Here's what happens behind the scenes:
+
+### Trace Files
+
+When test fails in CI, you download the trace file.
+
+**You:** "Here's the trace file from CI" (attach file)
+
+**Claude Code:**
+```
+Let me analyze the trace...
+
+[Claude examines the trace viewer output]
+
+I can see from the screenshots that the "Create" button is present
+but it's disabled. Looking at the network tab, the API call to fetch
+user permissions is still pending.
+
+The test needs to wait for permissions to load before clicking:
+
+await page.waitForResponse(resp => resp.url().includes('/api/permissions'));
+await page.getByRole('button', { name: 'Create' }).click();
+
+This is why it works locally (fast) but fails in CI (slower network).
+```
+
+You never opened Trace Viewer yourself. Claude did it for you.
+
+### Screenshots
+
+Tests automatically take screenshots on failure.
+
+**You:** "Test failed, here's the screenshot" (attach image)
+
+**Claude Code:**
+```
+Looking at the screenshot, I can see the modal is showing
+but the form fields are empty. The test is trying to submit
+before the form is populated with default values.
+
+The issue is the form loads asynchronously. I'll add a wait:
+
+await expect(page.getByLabel('Title')).toHaveValue('');  // Wait for field
+await page.getByLabel('Title').fill('My Task');
+
+This ensures the form is ready before we interact with it.
+```
+
+### Debug Mode
+
+**Claude Code might ask:** "Can you run this test with --debug and tell me what you see?"
 
 {lang=bash}
 ```
-npx playwright show-trace trace.zip
+npx playwright test tasks/create.spec.ts --debug
 ```
 
-**What you see:**
+Test pauses at each step. You take a screenshot or note what you see.
 
-1. **Timeline:** Every action, screenshot, network request
-2. **Action log:** Exact steps with timing
-3. **Screenshots:** Visual state at each step
-4. **Network:** All API calls and responses
-5. **Console:** All console.log output
-6. **Source:** Test code with current step highlighted
+**You:** "It paused at the click action. The button exists but nothing happens when I click it."
 
-**Time-travel debugging:**
-- Scrub timeline to any point
-- See exact DOM state at that moment
-- See what network requests were in flight
-- See console logs up to that point
-
-**Example: Debugging flaky test**
-
-Test sometimes fails with "Element not found". With Trace Viewer:
-
-1. Open trace of failed run
-2. Scrub to failure point
-3. See screenshot: button is still loading
-4. See network tab: API call hasn't returned yet
-5. **Fix:** Add proper wait for API response
-
-{lang=typescript}
+**Claude Code:**
 ```
-// Before: Flaky
-await page.getByRole('button', { name: 'Submit' }).click();
+The button exists but clicking does nothing - this is usually
+a z-index issue or the button is covered by another element.
 
-// After: Reliable
-await page.waitForResponse(resp => resp.url().includes('/api/save'));
-await page.getByRole('button', { name: 'Submit' }).click();
+Looking at your CSS, I see the modal backdrop has z-index: 50
+and the button has z-index: 10. The button is being covered.
+
+Let me update the test to click through to the button:
+
+await page.getByRole('button', { name: 'Create' }).click({ force: true });
+
+Or better, I'll fix your CSS so the button isn't covered.
 ```
 
-## Screenshots and Videos
+## Debugging Real-Time Features
 
-**Automatic screenshots on failure:**
+**You:** "Test for real-time updates is failing. One user creates a task but the other user doesn't see it."
 
-{lang=typescript}
+**Claude Code:**
 ```
-// playwright.config.ts
-export default defineConfig({
-  use: {
-    screenshot: 'only-on-failure',
-  },
-});
-```
+Real-time test failures are usually WebSocket/subscription issues.
 
-**Manual screenshots:**
+Let me check if your test waits for the subscription to be ready:
 
-{lang=typescript}
-```
-test('debug form submission', async ({ page }) => {
-  await page.goto('/tasks/new');
+[Examines test]
 
-  // Take screenshot before action
-  await page.screenshot({ path: 'before-submit.png' });
+I see you're opening the second page and immediately expecting the update.
+The subscription hasn't connected yet.
 
-  await page.getByRole('button', { name: 'Create' }).click();
+I'll add a wait for the subscription:
 
-  // Take screenshot after action
-  await page.screenshot({ path: 'after-submit.png' });
-});
-```
+const page2 = await context.newPage();
+await page2.goto('/dashboard');
 
-**Full page screenshots:**
+// Wait for subscription to connect
+await page2.waitForResponse(resp =>
+  resp.url().includes('realtime') && resp.status() === 101
+);
 
-{lang=typescript}
-```
-await page.screenshot({
-  path: 'full-page.png',
-  fullPage: true  // Captures entire scrollable page
-});
+// Now the subscription is ready, create task in page1
+await page1.getByRole('button', { name: 'New Task' }).click();
+...
+
+// page2 should now see the update
+await expect(page2.getByText('New Task')).toBeVisible();
 ```
 
-**Video recording:**
+## When Claude Asks for More Info
 
-{lang=typescript}
+Sometimes Claude needs additional context:
+
+**Claude Code:** "I need to see the component code to understand why the selector isn't working. Can you show me the task creation modal?"
+
+**You:** (paste component code or point to file)
+
+**Claude Code:**
 ```
-// playwright.config.ts
-export default defineConfig({
-  use: {
-    // Record video on failure
-    video: 'retain-on-failure',
+Ah, I see the issue. Your button uses a custom <Button> component
+that doesn't expose the role="button" attribute.
 
-    // Or always record (slower)
-    // video: 'on',
-  },
-});
-```
+The test should use this selector instead:
 
-**Access video in test:**
+await page.getByTestId('create-task-button').click();
 
-{lang=typescript}
-```
-test('with video', async ({ page }, testInfo) => {
-  // Test code...
-
-  // Get video path after test
-  const videoPath = await page.video()?.path();
-  console.log('Video saved to:', videoPath);
-});
+Or I can update your Button component to include role="button".
+Which would you prefer?
 ```
 
-## Finding Flaky Tests
+You make the decision, Claude implements it.
 
-**The most annoying problem:** Tests that pass sometimes, fail sometimes.
+## Preventing Future Failures
 
-**Playwright solution:** Run tests multiple times to catch flakiness.
+After fixing a test, Claude Code learns:
 
-{lang=bash}
+**Claude Code:**
 ```
-# Run each test 10 times
-npx playwright test --repeat-each=10
-```
+I've fixed this test, and I noticed this is the third time we've had
+timing issues with form submissions.
 
-**If test is flaky:**
-- It will fail at least once out of 10
-- Trace Viewer shows exactly which run failed
-- Compare failing trace to passing trace
+I'm going to create a helper function that all tests can use:
 
-**Common causes of flakiness:**
+// e2e/helpers/forms.ts
+export async function submitForm(page: Page, buttonName: string) {
+  await page.waitForLoadState('networkidle');
+  await page.getByRole('button', { name: buttonName }).click();
+  await page.waitForURL(url => !url.includes('?'));
+}
 
-1. **Race conditions:**
-{lang=typescript}
-```
-// Flaky: Doesn't wait for API
-await page.getByRole('button', { name: 'Load' }).click();
-await expect(page.getByText('Data loaded')).toBeVisible();
+Now all tests can use:
+await submitForm(page, 'Create');
 
-// Fixed: Wait for API
-await page.getByRole('button', { name: 'Load' }).click();
-await page.waitForResponse(resp => resp.url().includes('/api/data'));
-await expect(page.getByText('Data loaded')).toBeVisible();
+This prevents future timing issues.
 ```
 
-2. **Animation timing:**
-{lang=typescript}
-```
-// Flaky: Element animating in
-await page.getByText('Notification').click();
-
-// Fixed: Wait for animation
-await expect(page.getByText('Notification')).toBeVisible();
-await page.getByText('Notification').click();
-```
+You didn't ask for this. Claude Code proactively improves the test suite.
 
-3. **Test interdependence:**
-{lang=typescript}
-```
-// Flaky: Depends on previous test's data
-test('edit task', async () => {
-  // Assumes task exists from previous test!
-});
+## CI Debugging Workflow
 
-// Fixed: Create own test data
-test('edit task', async () => {
-  const taskId = await createTestTask();
-  // Now test editing
-});
-```
+When test fails in CI:
 
-## Using Claude Code for Debugging
+### 1. Check GitHub Actions Log
 
-**The ultimate combo:** Claude Code + Playwright traces
+**You:** "Test failed in CI. Here's the log" (copy/paste)
 
-**Workflow:**
+**Claude Code:** "I see the error. Let me fix the test."
 
-1. Test fails in CI
-2. Download trace from artifacts
-3. Share trace with Claude Code:
+### 2. Download Artifacts (If Needed)
 
-```
-"Claude, analyze this Playwright trace and tell me why the test failed"
-```
+GitHub Actions uploads trace files when tests fail.
 
-4. Claude examines:
-   - Timeline
-   - Screenshots
-   - Network requests
-   - Console errors
-   - Test code
+**You:** "Here's the trace artifact from CI" (download and share)
 
-5. Claude suggests fix:
+**Claude Code:** "Analyzing the trace... I found the issue..."
 
-```
-"The test fails because the API call to /api/tasks returns 500.
-Looking at the network tab, the request is missing the auth header.
+### 3. Fix and Re-Run
 
-Fix: Ensure your test fixture sets up authentication before this test runs.
+**Claude Code:** "I've pushed a fix to your branch. The CI should pass now."
 
-Here's the code change..."
-```
+You check GitHub - test passes ✅
 
-**Claude can also:**
-- Generate tests from user flows
-- Add proper waits to flaky tests
-- Suggest better selectors
-- Identify race conditions
+## The Learning Curve (There Isn't One)
 
-**Example conversation:**
+**Week 1:**
+- You: "Test failed"
+- Claude: "Here's the fix"
+- You: "Thanks"
 
-```
-You: "Write an E2E test for creating a task"
+**Week 10:**
+- You: "Test failed with element not found"
+- Claude: "Here's the fix"
+- You: "Wait, is this the same issue we had before?"
+- Claude: "Yes, similar pattern. Want me to create a helper to prevent this?"
 
-Claude: "Here's a test with proper waits and assertions:
+**Week 50:**
+- You: "Test failing, probably timing issue"
+- Claude: "Yep, added proper wait"
+- You: "Thanks, knew it"
 
-[Generates complete test with Page Object, fixtures, and error handling]
+You learn patterns by osmosis, not by studying.
 
-The test uses `waitForResponse` to avoid race conditions."
-```
+## Summary: The Debugging Partnership
 
-## Systematic Debugging Process
+**Your job:**
+- Run tests
+- Report failures
+- Make decisions ("fix test" vs "fix UI")
+- Verify fixes work
 
-When E2E test fails, follow this process:
+**Claude Code's job:**
+- Analyze errors
+- Examine traces/screenshots
+- Identify root causes
+- Generate fixes
+- Explain what went wrong
+- Prevent similar issues
 
-### 1. Reproduce Locally
+**Result:** Tests stay passing with minimal effort from you.
 
-{lang=bash}
-```
-# Run specific failing test
-npx playwright test auth.spec.ts:15 --debug
-```
+## Why This Works
 
-**If it passes locally but fails in CI:**
-- Could be timing issue (CI slower)
-- Could be environment difference
-- Check CI logs and trace
+Traditional E2E testing requires you to be expert in:
+- Playwright API
+- Browser DevTools
+- Async/await patterns
+- Selector strategies
+- Debugging techniques
 
-### 2. Enable Full Instrumentation
+Vibe coding E2E testing requires you to be expert in:
+- Your application's user flows
+- Clear communication with Claude Code
 
-{lang=typescript}
-```
-// playwright.config.ts (temporarily)
-export default defineConfig({
-  use: {
-    trace: 'on',           // Always record
-    screenshot: 'on',      // Screenshot every action
-    video: 'on',          // Record video
-  },
-});
-```
+That's it.
 
-### 3. Analyze Trace
+The debugging tools (Trace Viewer, Inspector, screenshots) still exist and work great. Claude Code uses them. You don't have to.
 
-Open trace in Trace Viewer:
+**Focus your expertise where it matters:** Understanding your users and shipping features that work.
 
-{lang=bash}
-```
-npx playwright show-trace trace.zip
-```
-
-**Check each:**
-- ☐ Screenshots: What was visible when it failed?
-- ☐ Network: Did API calls succeed?
-- ☐ Console: Any errors or warnings?
-- ☐ Timeline: Where exactly did it fail?
-- ☐ DOM: Was element present but not visible?
-
-### 4. Identify Root Cause
-
-**Common failure modes:**
-
-**Element not found:**
-- Element doesn't exist (wrong selector)
-- Element exists but not visible (hidden/opacity)
-- Element exists but not in viewport (need scroll)
-- Element hasn't loaded yet (need wait)
-
-**Timeout:**
-- Waiting for condition that never becomes true
-- API call taking too long
-- Infinite loading state
-
-**Assertion failed:**
-- Wrong expected value
-- Element has unexpected state
-- Race condition (value changes after check)
-
-### 5. Fix and Verify
-
-Add fix, then verify with multiple runs:
-
-{lang=bash}
-```
-# Run 20 times to catch flakiness
-npx playwright test auth.spec.ts --repeat-each=20
-```
-
-If all 20 pass → fixed!
-
-If any fail → still flaky, check trace of failure.
-
-## CI Debugging
-
-**When test fails in CI:**
-
-1. **Download artifacts:**
-
-GitHub Actions automatically uploads:
-- playwright-report/ (HTML report)
-- test-results/ (traces, screenshots, videos)
-
-2. **View HTML report:**
-
-{lang=bash}
-```
-# Unzip artifact
-unzip playwright-report.zip
-
-# Open report
-npx playwright show-report playwright-report/
-```
-
-3. **Open trace from failed test:**
-
-{lang=bash}
-```
-npx playwright show-trace test-results/auth-login/trace.zip
-```
-
-4. **Compare with local:**
-
-Run same test locally with trace:
-
-{lang=bash}
-```
-npx playwright test auth.spec.ts --trace on
-```
-
-Compare local trace (passing) vs CI trace (failing):
-- Different timing?
-- Different API responses?
-- Different viewport size?
-
-## Performance Debugging
-
-**Test is too slow?**
-
-Use trace to identify bottlenecks:
-
-1. Open trace
-2. Look at timeline
-3. Find longest gaps between actions
-4. Usually:
-   - Slow API calls
-   - Unnecessary waits
-   - Heavy page loads
-
-**Fix slow tests:**
-
-{lang=typescript}
-```
-// Slow: Waits for full page load
-await page.goto('/dashboard');
-
-// Fast: Don't wait for everything
-await page.goto('/dashboard', {
-  waitUntil: 'domcontentloaded'
-});
-
-// Slow: Tests run sequentially
-test.describe('tasks', () => {
-  test('create', ...);
-  test('edit', ...);
-  test('delete', ...);
-});
-
-// Fast: Tests run in parallel
-test.describe.parallel('tasks', () => {
-  test('create', ...);
-  test('edit', ...);
-  test('delete', ...);
-});
-```
-
-## Summary: Debugging Workflow
-
-**When test fails:**
-
-1. Run with `--debug` to step through
-2. If can't reproduce, enable `trace: 'on'`
-3. Open Trace Viewer, scrub to failure point
-4. Identify root cause (timing, selector, API, etc.)
-5. Add proper wait or fix selector
-6. Run 20 times to verify fix
-7. Ask Claude Code if still stuck!
-
-**Tools hierarchy:**
-
-- **Quick check:** `--debug` flag
-- **Deep investigation:** Trace Viewer
-- **Catch flakes:** `--repeat-each=10`
-- **Ultimate weapon:** Claude Code + trace
-
-Playwright's debugging tools turn E2E testing from nightmare to productive. Combine with Claude Code for maximum efficiency.
-
-T> **Pro Tip: Trace on First Retry**
+T> **The Ultimate Debug Tool: Natural Language**
 T>
-T> The config `trace: 'on-first-retry'` is perfect. First run = fast (no trace). If it fails, Playwright reruns with trace enabled. You get speed when passing, detail when failing.
+T> The most powerful debugging tool isn't Trace Viewer or Chrome DevTools. It's being able to say "This test is flaky" and having Claude Code fix it. Natural language is the user interface.

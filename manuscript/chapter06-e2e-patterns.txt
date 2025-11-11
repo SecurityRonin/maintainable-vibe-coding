@@ -1,34 +1,17 @@
-# E2E Testing Patterns
+# Understanding E2E Test Patterns
 
-Now that Playwright is set up, let's learn patterns for writing maintainable, reliable E2E tests.
+Claude Code writes your Playwright tests, but it's useful to understand the patterns it uses. Not so you can write them yourself, but so you can:
 
-## The Page Object Model
+1. Review tests Claude Code generates
+2. Request specific patterns
+3. Understand why tests are structured a certain way
+4. Spot when something looks wrong
 
-**Problem:** Repeating selectors across tests makes them brittle.
+Think of this as "reading comprehension" not "writing skills."
 
-**Solution:** Page Object Model encapsulates page structure.
+## Pattern 1: Page Objects
 
-**Without Page Objects:**
-
-{lang=typescript}
-```
-test('create task', async ({ page }) => {
-  await page.goto('/dashboard');
-  await page.getByRole('button', { name: 'New Task' }).click();
-  await page.getByLabel('Title').fill('My Task');
-  await page.getByLabel('Description').fill('Do something');
-  await page.getByRole('button', { name: 'Create' }).click();
-});
-
-test('edit task', async ({ page }) => {
-  await page.goto('/dashboard');
-  // Duplicated selectors! If UI changes, update everywhere
-  await page.getByRole('button', { name: 'Edit Task' }).click();
-  await page.getByLabel('Title').fill('Updated');
-});
-```
-
-**With Page Objects:**
+**What you'll see Claude Code create:**
 
 {lang=typescript}
 ```
@@ -40,16 +23,9 @@ export class DashboardPage {
     await this.page.goto('/dashboard');
   }
 
-  async clickNewTask() {
+  async createTask(title: string) {
     await this.page.getByRole('button', { name: 'New Task' }).click();
-  }
-
-  async fillTaskForm(title: string, description: string) {
     await this.page.getByLabel('Title').fill(title);
-    await this.page.getByLabel('Description').fill(description);
-  }
-
-  async submitTaskForm() {
     await this.page.getByRole('button', { name: 'Create' }).click();
   }
 
@@ -59,125 +35,179 @@ export class DashboardPage {
 }
 ```
 
-**Using Page Objects:**
+**Why Claude does this:**
+- Changes to UI selectors only need updating in one place
+- Tests read like English: `dashboard.createTask('My Task')`
+- Reusable across multiple tests
 
-{lang=typescript}
-```
-test('create task', async ({ page }) => {
-  const dashboard = new DashboardPage(page);
+**What you do:**
+- Review: "Does this match my UI?"
+- Request: "Use Page Object pattern for dashboard tests"
+- Trust: Claude Code knows when to use this pattern
 
-  await dashboard.goto();
-  await dashboard.clickNewTask();
-  await dashboard.fillTaskForm('My Task', 'Do something');
-  await dashboard.submitTaskForm();
-  await dashboard.expectTaskVisible('My Task');
-});
-```
+## Pattern 2: Test Fixtures
 
-**Benefits:**
-- ✅ Change UI selectors in one place
-- ✅ Reusable across tests
-- ✅ Self-documenting test code
-- ✅ Easier to refactor
-
-## Test Isolation
-
-**Problem:** Tests that depend on each other are flaky and hard to debug.
-
-**Solution:** Each test should be completely independent.
-
-**Bad: Tests depend on order**
-
-{lang=typescript}
-```
-test('create task', async ({ page }) => {
-  // Creates task
-});
-
-test('edit task', async ({ page }) => {
-  // Assumes task from previous test exists! FLAKY!
-});
-```
-
-**Good: Each test sets up its own data**
-
-{lang=typescript}
-```
-test('edit task', async ({ page }) => {
-  // Create test task first
-  const taskId = await createTestTask({
-    title: 'Original Title'
-  });
-
-  // Now test editing
-  await page.goto(`/tasks/${taskId}/edit`);
-  await page.getByLabel('Title').fill('New Title');
-  await page.getByRole('button', { name: 'Save' }).click();
-
-  await expect(page.getByText('New Title')).toBeVisible();
-});
-```
-
-## Fixtures for Common Setup
-
-**Problem:** Every test needs to log in and set up data.
-
-**Solution:** Create reusable fixtures.
+**What you'll see:**
 
 {lang=typescript}
 ```
 // e2e/fixtures.ts
-import { test as base } from '@playwright/test';
-import { DashboardPage } from './pages/DashboardPage';
-
-type Fixtures = {
-  authenticatedPage: Page;
-  dashboard: DashboardPage;
-};
-
-export const test = base.extend<Fixtures>({
-  // Fixture: Authenticated page
+export const test = base.extend({
   authenticatedPage: async ({ page }, use) => {
-    // Log in before each test
+    // Logs in before each test
     await page.goto('/login');
     await page.getByLabel('Email').fill('test@example.com');
-    await page.getByLabel('Password').fill('password123');
+    await page.getByLabel('Password').fill('password');
     await page.getByRole('button', { name: 'Sign In' }).click();
     await page.waitForURL('/dashboard');
 
-    // Give test access to authenticated page
     await use(page);
 
-    // Cleanup: logout after test
+    // Logs out after test
     await page.getByRole('button', { name: 'Logout' }).click();
-  },
-
-  // Fixture: Dashboard page object
-  dashboard: async ({ authenticatedPage }, use) => {
-    const dashboard = new DashboardPage(authenticatedPage);
-    await use(dashboard);
   },
 });
 ```
 
-**Using fixtures:**
+**Why Claude does this:**
+- Every test that needs authentication uses this fixture
+- No repeated login code in every test
+- Automatic cleanup after tests
+
+**What you do:**
+- Review: "Is this the right login flow?"
+- Request: "Add fixture for authenticated admin user"
+- Appreciate: Tests are cleaner because of this
+
+## Pattern 3: Test Isolation
+
+**What you'll see:**
 
 {lang=typescript}
 ```
-import { test, expect } from './fixtures';
+test('edit task', async ({ page }) => {
+  // Each test creates its own test data
+  const taskId = await createTestTask({ title: 'Original' });
 
-test('create task', async ({ dashboard }) => {
-  // Already logged in! No setup needed
-  await dashboard.clickNewTask();
-  await dashboard.fillTaskForm('My Task', 'Description');
-  await dashboard.submitTaskForm();
-  await dashboard.expectTaskVisible('My Task');
+  await page.goto(`/tasks/${taskId}/edit`);
+  await page.getByLabel('Title').fill('Updated');
+  await page.getByRole('button', { name: 'Save' }).click();
+
+  await expect(page.getByText('Updated')).toBeVisible();
 });
 ```
 
-## Testing Authentication
+**Why Claude does this:**
+- Tests don't depend on each other
+- Can run in any order
+- Parallel execution works
+- Easier to debug
 
-**Email/Password login:**
+**What you do:**
+- Notice: Each test stands alone
+- Request: "Make sure tests don't depend on each other"
+- Run: Tests in parallel with `--workers=4`
+
+## Pattern 4: Waiting Strategies
+
+**What you'll see:**
+
+{lang=typescript}
+```
+// Claude waits for API responses
+await page.waitForResponse(resp =>
+  resp.url().includes('/api/tasks') &&
+  resp.status() === 200
+);
+
+// Claude waits for elements
+await expect(page.getByText('Loading...')).not.toBeVisible();
+
+// Claude doesn't use arbitrary timeouts
+// ❌ await page.waitForTimeout(3000);
+```
+
+**Why Claude does this:**
+- Tests are reliable, not flaky
+- Fast when possible, patient when needed
+- No guessing at timeouts
+
+**What you do:**
+- If test is flaky: "Claude, this test is flaky, fix the waiting"
+- Trust: Claude picks the right wait strategy
+- Learn: Read the waits Claude adds to understand timing
+
+## Pattern 5: Testing Real-Time Features
+
+**What you'll see:**
+
+{lang=typescript}
+```
+test('real-time updates', async ({ page, context }) => {
+  const page1 = page;
+  const page2 = await context.newPage();
+
+  // Both pages open dashboard
+  await page1.goto('/dashboard');
+  await page2.goto('/dashboard');
+
+  // User 1 creates task
+  await page1.getByRole('button', { name: 'New Task' }).click();
+  await page1.getByLabel('Title').fill('Real-time Task');
+  await page1.getByRole('button', { name: 'Create' }).click();
+
+  // User 2 sees it immediately (real-time!)
+  await expect(page2.getByText('Real-time Task')).toBeVisible();
+});
+```
+
+**Why Claude does this:**
+- Opens multiple browser contexts
+- Simulates multiple users
+- Verifies WebSocket/Supabase subscriptions work
+
+**What you do:**
+- Request: "Test that two users see changes in real-time"
+- Review: "Yes, this tests what I need"
+- Ship: Confidence in real-time features
+
+## Pattern 6: Form Validation Testing
+
+**What you'll see:**
+
+{lang=typescript}
+```
+test('form validation', async ({ page }) => {
+  await page.goto('/tasks/new');
+
+  // Submit empty form
+  await page.getByRole('button', { name: 'Create' }).click();
+
+  // Expect validation errors
+  await expect(page.getByText('Title is required')).toBeVisible();
+
+  // Fill valid data
+  await page.getByLabel('Title').fill('Valid Task');
+  await page.getByRole('button', { name: 'Create' }).click();
+
+  // Success
+  await expect(page).toHaveURL('/dashboard');
+});
+```
+
+**Why Claude does this:**
+- Tests both error and success states
+- Verifies user sees helpful error messages
+- Confirms form actually submits when valid
+
+**What you do:**
+- Request: "Test form validation for task creation"
+- Review: "Does this cover all validation rules?"
+- Add: "Also test invalid date format"
+
+## Pattern 7: Authentication Flows
+
+**What you'll see for email/password:**
 
 {lang=typescript}
 ```
@@ -188,7 +218,6 @@ test('login with valid credentials', async ({ page }) => {
   await page.getByRole('button', { name: 'Sign In' }).click();
 
   await expect(page).toHaveURL('/dashboard');
-  await expect(page.getByText('Welcome back')).toBeVisible();
 });
 
 test('login with invalid password', async ({ page }) => {
@@ -197,49 +226,21 @@ test('login with invalid password', async ({ page }) => {
   await page.getByLabel('Password').fill('wrong');
   await page.getByRole('button', { name: 'Sign In' }).click();
 
-  // Should show error
   await expect(page.getByText('Invalid credentials')).toBeVisible();
-
-  // Should NOT redirect
-  await expect(page).toHaveURL('/login');
+  await expect(page).toHaveURL('/login'); // Still on login page
 });
 ```
 
-**OAuth login (tricky!):**
+**What you'll see for OAuth:**
 
 {lang=typescript}
 ```
-test('login with Google', async ({ page, context }) => {
-  await page.goto('/login');
-
-  // Click Google login button
-  const [popup] = await Promise.all([
-    context.waitForEvent('page'), // Wait for OAuth popup
-    page.getByRole('button', { name: 'Continue with Google' }).click()
-  ]);
-
-  // Fill in Google login form (in popup)
-  await popup.waitForLoadState();
-  await popup.getByLabel('Email').fill('test@gmail.com');
-  await popup.getByLabel('Password').fill('password');
-  await popup.getByRole('button', { name: 'Sign in' }).click();
-
-  // Wait for redirect back to app
-  await page.waitForURL('/dashboard');
-  await expect(page.getByText('Welcome')).toBeVisible();
-});
-```
-
-**Pro tip:** Mock OAuth in tests for speed:
-
-{lang=typescript}
-```
-test('login with Google (mocked)', async ({ page }) => {
-  // Intercept OAuth callback
+test('login with Google', async ({ page }) => {
+  // Claude mocks OAuth in tests for speed
   await page.route('**/auth/callback*', route => {
     route.fulfill({
       status: 302,
-      headers: { Location: '/dashboard?token=fake-test-token' }
+      headers: { Location: '/dashboard?token=test-token' }
     });
   });
 
@@ -250,216 +251,122 @@ test('login with Google (mocked)', async ({ page }) => {
 });
 ```
 
-## Testing Real-Time Features
+**Why Claude does this:**
+- OAuth tests run fast (no real Google popup)
+- Tests both success and error paths
+- Focuses on YOUR app's behavior
 
-**Problem:** Real-time features (WebSockets, Supabase subscriptions) need special handling.
+**What you do:**
+- Request: "Test Google OAuth login"
+- Review: "Mocking is fine for tests"
+- Ship: Confidence in auth flows
 
-**Solution:** Use Playwright's `waitFor` helpers.
+## How to Request Patterns
 
-{lang=typescript}
-```
-test('real-time task updates', async ({ page, context }) => {
-  // Open two browser tabs
-  const page1 = page;
-  const page2 = await context.newPage();
+You don't need to know the implementation. Just describe what you want:
 
-  // Both navigate to dashboard
-  await page1.goto('/dashboard');
-  await page2.goto('/dashboard');
+**Instead of:**
+"Create a Page Object Model with getters for dashboard elements and async methods for user interactions"
 
-  // User 1 creates task
-  await page1.getByRole('button', { name: 'New Task' }).click();
-  await page1.getByLabel('Title').fill('Real-time Task');
-  await page1.getByRole('button', { name: 'Create' }).click();
+**Say:**
+"Organize the dashboard tests so selectors aren't repeated everywhere"
 
-  // User 2 should see it appear (real-time!)
-  await expect(page2.getByText('Real-time Task')).toBeVisible();
-});
-```
+**Claude Code will:**
+- Recognize you want Page Objects
+- Implement the pattern
+- Apply it consistently
 
-## Testing Drag and Drop
+## When Patterns Don't Match Your App
 
-**Problem:** Drag-and-drop requires mouse events.
+**You:** "Claude, this test uses `getByRole('button')` but my buttons are styled links. Fix the selectors."
 
-**Solution:** Use Playwright's drag-and-drop API.
+**Claude Code:**
+- Updates selectors to match your UI
+- Explains why `getByRole` didn't work
+- Uses `getByTestId` or `getByText` instead
 
-{lang=typescript}
-```
-test('drag task to different column', async ({ page }) => {
-  await page.goto('/kanban');
+**You don't need to know Playwright selectors.** Just tell Claude what's wrong.
 
-  const task = page.getByText('My Task');
-  const targetColumn = page.getByTestId('column-in-progress');
+## Reading Tests Like Documentation
 
-  // Drag task to target column
-  await task.dragTo(targetColumn);
-
-  // Verify task moved
-  await expect(targetColumn.getByText('My Task')).toBeVisible();
-});
-```
-
-## Handling Async Operations
-
-**Problem:** Tests fail because they run faster than the app.
-
-**Solution:** Playwright auto-waits, but use explicit waits when needed.
-
-**Auto-waiting (preferred):**
+Tests Claude Code writes ARE documentation:
 
 {lang=typescript}
 ```
-test('create task with API call', async ({ page }) => {
+test('user creates task with attachments', async ({ page }) => {
   await page.goto('/dashboard');
   await page.getByRole('button', { name: 'New Task' }).click();
-  await page.getByLabel('Title').fill('API Task');
+  await page.getByLabel('Title').fill('Task with files');
+
+  // Upload attachment
+  await page.getByLabel('Attach files').setInputFiles('test-file.pdf');
+
   await page.getByRole('button', { name: 'Create' }).click();
 
-  // Playwright automatically waits for element to appear
-  await expect(page.getByText('API Task')).toBeVisible();
-  // No manual waiting needed!
+  // Task shows attachment
+  await expect(page.getByText('test-file.pdf')).toBeVisible();
 });
 ```
 
-**Explicit waits (when needed):**
+**Reading this tells you:**
+- Tasks can have attachments
+- Users click "New Task" to create
+- File upload field is labeled "Attach files"
+- Created task displays file name
 
-{lang=typescript}
-```
-test('wait for loading to finish', async ({ page }) => {
-  await page.goto('/dashboard');
+**Better than README:** Tests prove features work.
 
-  // Wait for loading spinner to disappear
-  await page.waitForSelector('[data-testid="loading"]', {
-    state: 'hidden'
-  });
+## Common Test Anti-Patterns
 
-  // Now interact with loaded content
-  await page.getByText('Dashboard').click();
-});
-```
-
-**Wait for network:**
-
-{lang=typescript}
-```
-test('wait for API response', async ({ page }) => {
-  await page.goto('/dashboard');
-
-  // Wait for specific API call
-  await page.waitForResponse(
-    response => response.url().includes('/api/tasks') &&
-                response.status() === 200
-  );
-
-  // API finished, now assert
-  await expect(page.getByText('Tasks loaded')).toBeVisible();
-});
-```
-
-## Testing Forms
-
-**Complex forms with validation:**
-
-{lang=typescript}
-```
-test('form validation', async ({ page }) => {
-  await page.goto('/tasks/new');
-
-  // Submit empty form
-  await page.getByRole('button', { name: 'Create' }).click();
-
-  // Should show validation errors
-  await expect(page.getByText('Title is required')).toBeVisible();
-
-  // Fill invalid data
-  await page.getByLabel('Due Date').fill('invalid-date');
-  await page.getByRole('button', { name: 'Create' }).click();
-
-  await expect(page.getByText('Invalid date format')).toBeVisible();
-
-  // Fix errors and submit
-  await page.getByLabel('Title').fill('Valid Task');
-  await page.getByLabel('Due Date').fill('2025-12-31');
-  await page.getByRole('button', { name: 'Create' }).click();
-
-  // Should succeed
-  await expect(page).toHaveURL('/dashboard');
-  await expect(page.getByText('Task created')).toBeVisible();
-});
-```
-
-## When to Use E2E vs Unit Tests
-
-**E2E tests:**
-- ✅ Critical user journeys
-- ✅ Features with UI interactions
-- ✅ Integration between frontend + backend + database
-- ✅ Real browser behavior matters
-
-**Unit tests:**
-- ✅ Business logic functions
-- ✅ Edge cases and error handling
-- ✅ Utility functions
-- ✅ Fast feedback during development
-
-**Example split:**
-
-```
-TaskFlow test coverage:
-- 5 E2E tests (critical flows)
-  - Signup → Create task → Complete task
-  - Login → Edit task → Logout
-  - Drag task between columns
-  - Real-time collaboration
-  - Payment flow (if applicable)
-
-- 50+ unit tests (business logic)
-  - Task validation
-  - Date formatting
-  - Filter logic
-  - Permission checks
-```
-
-**Rule: 70% unit tests, 30% E2E tests**
-
-## Common Pitfalls
+Claude Code avoids these, but know them so you can spot issues:
 
 **❌ Testing implementation details:**
-
-{lang=typescript}
-```
-// Bad: Relies on class names
+```typescript
+// Bad: Tests class names
 await page.locator('.btn-primary').click();
 
-// Good: Uses accessible names
-await page.getByRole('button', { name: 'Create Task' }).click();
+// Good: Tests user-visible behavior
+await page.getByRole('button', { name: 'Create' }).click();
 ```
 
-**❌ Flaky waits:**
-
-{lang=typescript}
-```
-// Bad: Arbitrary timeout
+**❌ Arbitrary timeouts:**
+```typescript
+// Bad: Guessing at timing
 await page.waitForTimeout(3000);
 
-// Good: Wait for specific condition
+// Good: Waiting for specific condition
 await page.waitForSelector('[data-testid="task-list"]');
 ```
 
 **❌ Too many E2E tests:**
+```typescript
+// Bad: E2E for every function
+test('formats date correctly', ...) // This should be unit test!
 
+// Good: E2E for user journeys
+test('user creates and edits task', ...)
 ```
-// Bad: E2E test for every function
-test('formats date correctly', ...)  // Should be unit test!
 
-// Good: E2E for user journeys only
-test('user can create and edit task', ...)
-```
+If you see these in Claude Code's tests, say: "This looks like an anti-pattern, fix it."
 
-## Next Steps
+## Summary: You're the Director
 
-You've learned patterns for maintainable E2E tests. Next, we'll cover Playwright's powerful auto-debugging tools.
+Think of E2E testing with Claude Code like directing a movie:
 
-T> **Claude Code + Playwright**
+**You (Director):**
+- Describe the scene: "User logs in, creates task, logs out"
+- Review the result: "Looks good" or "Change this part"
+- Approve for shipping: "Run tests, commit"
+
+**Claude Code (Screenwriter + Camera Operator):**
+- Writes the script (test code)
+- Handles technical details (selectors, waits, fixtures)
+- Captures the action (runs tests, generates traces)
+
+You don't need to operate the camera. You need to know what you want to capture.
+
+Next chapter: How Claude Code debugs failing E2E tests for you.
+
+T> **Pattern Recognition Over Memorization**
 T>
-T> Use Claude Code to write E2E tests! Describe the user flow in natural language, and Claude Code generates the Playwright test. Example: "Write an E2E test for login flow with email and password"
+T> After seeing Claude Code write 50 tests, you'll recognize patterns. That's better than memorizing Playwright API. You'll be able to say "Use the pattern you used in the auth tests" and Claude knows exactly what you mean.
