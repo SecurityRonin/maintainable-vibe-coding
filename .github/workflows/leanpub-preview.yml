@@ -1,0 +1,69 @@
+name: Leanpub Auto-Preview
+
+on:
+  push:
+    branches:
+      - preview
+    paths:
+      - 'manuscript/**'
+
+jobs:
+  trigger-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Trigger Leanpub Preview Build
+        id: leanpub
+        run: |
+          echo "Triggering Leanpub preview build..."
+
+          response=$(curl -s -X POST \
+            "https://leanpub.com/maintainable-vibe-coding/preview.json" \
+            -d "api_key=${{ secrets.LEANPUB_API_KEY }}")
+
+          echo "Response: $response"
+          echo "response=$response" >> $GITHUB_OUTPUT
+
+          # Check if successful
+          if echo "$response" | grep -q "message"; then
+            echo "✅ Leanpub preview build triggered successfully!"
+            exit 0
+          else
+            echo "❌ Failed to trigger Leanpub preview build"
+            exit 1
+          fi
+
+      - name: Comment on Commit
+        if: success()
+        uses: peter-evans/commit-comment@v3
+        with:
+          body: |
+            📚 **Leanpub Preview Build Triggered**
+
+            Your changes to the manuscript have triggered an automatic preview build on Leanpub.
+
+            **Check build status:** [Leanpub Dashboard](https://leanpub.com/maintainable-vibe-coding/dashboard)
+
+            The preview will be ready in a few minutes. You'll receive an email when it's done.
+
+            ---
+            *Triggered by commit ${{ github.sha }}*
+
+      - name: Notify on Failure
+        if: failure()
+        uses: peter-evans/commit-comment@v3
+        with:
+          body: |
+            ❌ **Leanpub Preview Build Failed**
+
+            Failed to trigger Leanpub preview build. Please check:
+            - Is `LEANPUB_API_KEY` secret configured?
+            - Is the API key still valid?
+            - Is the book slug correct?
+
+            **Manual trigger:** Go to [Leanpub Dashboard](https://leanpub.com/maintainable-vibe-coding/dashboard) and click "Preview"
+
+            ---
+            *Triggered by commit ${{ github.sha }}*

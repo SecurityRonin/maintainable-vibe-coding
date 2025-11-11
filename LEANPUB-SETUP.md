@@ -47,8 +47,32 @@ resources/
 1. In Leanpub book settings, select **"GitHub"** writing mode
 2. Authorize Leanpub to access your GitHub account
 3. Select repository: `SecurityRonin/maintainable-vibe-coding`
-4. Set branch: `main`
+4. Set branch: `preview` (recommended for draft/test builds)
 5. Leave folder as root (Leanpub auto-detects `manuscript/`)
+
+**Note:** Use `preview` branch for testing, or `main` for published versions. See [PUBLISHING-WORKFLOW.md](PUBLISHING-WORKFLOW.md) for details.
+
+### 2a. Get Your Leanpub API Key (For Automation)
+
+Your book now has **automated preview/publish workflows** via GitHub Actions!
+
+To enable them:
+
+1. Go to [leanpub.com/author_dashboard/api](https://leanpub.com/author_dashboard/api)
+2. Click "Generate New API Key"
+3. Copy the API key (you'll only see it once!)
+4. Go to your GitHub repository settings:
+   - https://github.com/SecurityRonin/maintainable-vibe-coding/settings/secrets/actions
+5. Click "New repository secret"
+6. Name: `LEANPUB_API_KEY`
+7. Value: Paste your API key
+8. Click "Add secret"
+
+**What this enables:**
+- Push to `preview` branch → Automatically triggers Leanpub preview build
+- Push to `main` branch → Automatically triggers Leanpub publish
+- You get commit comments showing build status
+- No more manual clicking "Preview" or "Publish"!
 
 ### 3. Configure Book Settings
 

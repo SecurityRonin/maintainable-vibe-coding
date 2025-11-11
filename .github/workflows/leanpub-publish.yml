@@ -1,0 +1,89 @@
+name: Leanpub Auto-Publish
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'manuscript/**'
+
+jobs:
+  trigger-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get commit message
+        id: commit
+        run: |
+          message=$(git log -1 --pretty=%B)
+          echo "message=$message" >> $GITHUB_OUTPUT
+
+      - name: Trigger Leanpub Publish
+        id: leanpub
+        run: |
+          echo "Triggering Leanpub publish..."
+
+          # Extract version from commit message if present
+          version=$(git log -1 --pretty=%B | grep -oP 'v\d+\.\d+\.\d+' || echo "")
+
+          if [ -z "$version" ]; then
+            release_notes="Published from commit ${{ github.sha }}"
+          else
+            release_notes="$version - Published from commit ${{ github.sha }}"
+          fi
+
+          response=$(curl -s -X POST \
+            "https://leanpub.com/maintainable-vibe-coding/publish.json" \
+            -d "api_key=${{ secrets.LEANPUB_API_KEY }}" \
+            -d "release_notes=$release_notes")
+
+          echo "Response: $response"
+          echo "response=$response" >> $GITHUB_OUTPUT
+
+          # Check if successful
+          if echo "$response" | grep -q "message"; then
+            echo "✅ Leanpub publish triggered successfully!"
+            exit 0
+          else
+            echo "❌ Failed to trigger Leanpub publish"
+            exit 1
+          fi
+
+      - name: Comment on Commit
+        if: success()
+        uses: peter-evans/commit-comment@v3
+        with:
+          body: |
+            🚀 **Leanpub Publish Triggered**
+
+            Your changes have triggered an automatic publish on Leanpub!
+
+            **What happens next:**
+            1. Leanpub builds the book (PDF, EPUB, MOBI)
+            2. New version is published to customers
+            3. Customers receive update notification email
+            4. You'll get a confirmation email when done
+
+            **Check status:** [Leanpub Dashboard](https://leanpub.com/maintainable-vibe-coding/dashboard)
+
+            ---
+            *Triggered by commit ${{ github.sha }}*
+
+      - name: Notify on Failure
+        if: failure()
+        uses: peter-evans/commit-comment@v3
+        with:
+          body: |
+            ❌ **Leanpub Publish Failed**
+
+            Failed to trigger Leanpub publish. Please check:
+            - Is `LEANPUB_API_KEY` secret configured?
+            - Is the API key still valid?
+            - Is the book slug correct?
+
+            **Manual publish:** Go to [Leanpub Dashboard](https://leanpub.com/maintainable-vibe-coding/dashboard) and click "Publish New Version"
+
+            ---
+            *Triggered by commit ${{ github.sha }}*
