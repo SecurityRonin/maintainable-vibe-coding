@@ -1,0 +1,305 @@
+# Playwright Setup
+
+After mastering TDD with unit tests, it's time to add end-to-end (E2E) testing with Playwright. While unit tests verify individual functions work correctly, E2E tests verify your entire application works from the user's perspective.
+
+## Why Playwright?
+
+**Playwright** is the modern choice for E2E testing:
+
+- **Multi-browser:** Test Chrome, Firefox, Safari automatically
+- **Fast and reliable:** Runs tests in parallel, auto-waits for elements
+- **Developer-friendly:** Excellent debugging tools and TypeScript support
+- **Auto-waiting:** No more flaky tests from timing issues
+- **Built-in tooling:** Inspector, trace viewer, codegen
+
+**Alternatives considered:**
+- Cypress: Great, but Playwright is faster and supports more browsers
+- Selenium: Old, slow, flaky
+- Puppeteer: Good, but Playwright has better DX
+
+## Installation
+
+Install Playwright in your Next.js project:
+
+{lang=bash}
+```
+npm init playwright@latest
+```
+
+**Interactive prompts:**
+
+```
+? Do you want to use TypeScript or JavaScript? › TypeScript
+? Where to put your end-to-end tests? › e2e
+? Add a GitHub Actions workflow? › true
+? Install Playwright browsers? › true
+```
+
+**What this creates:**
+
+{lang=text}
+```
+e2e/
+  ├── example.spec.ts       # Example test
+  └── fixtures.ts           # Test fixtures (optional)
+playwright.config.ts        # Playwright configuration
+.github/workflows/
+  └── playwright.yml        # CI workflow
+```
+
+## Configuration
+
+Your `playwright.config.ts` needs TaskFlow-specific settings:
+
+{lang=typescript}
+```
+import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e',
+
+  // Run tests in parallel
+  fullyParallel: true,
+
+  // Fail fast - stop on first failure during dev
+  fullyParallel: !process.env.CI,
+
+  // Retry failed tests in CI
+  retries: process.env.CI ? 2 : 0,
+
+  // Test against multiple browsers
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+  ],
+
+  // Start dev server before tests
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+  },
+
+  // Base URL for tests
+  use: {
+    baseURL: 'http://localhost:3000',
+
+    // Collect trace on failure for debugging
+    trace: 'on-first-retry',
+
+    // Screenshots on failure
+    screenshot: 'only-on-failure',
+  },
+});
+```
+
+## Your First E2E Test
+
+Let's test the TaskFlow login flow:
+
+{lang=typescript}
+```
+// e2e/auth.spec.ts
+import { test, expect } from '@playwright/test';
+
+test('user can sign in with email and password', async ({ page }) => {
+  // Navigate to login page
+  await page.goto('/login');
+
+  // Fill in login form
+  await page.getByLabel('Email').fill('test@example.com');
+  await page.getByLabel('Password').fill('password123');
+
+  // Click sign in button
+  await page.getByRole('button', { name: 'Sign In' }).click();
+
+  // Should redirect to dashboard
+  await expect(page).toHaveURL('/dashboard');
+
+  // Should see welcome message
+  await expect(page.getByText('Welcome back')).toBeVisible();
+});
+```
+
+**What's different from unit tests:**
+
+- Tests the **entire flow** (UI + backend + database)
+- Uses **real browser** (not JSDOM)
+- **Slower** but catches more bugs
+- Tests what **users actually experience**
+
+## Running Tests
+
+**Run all tests:**
+
+{lang=bash}
+```
+npx playwright test
+```
+
+**Run in UI mode (recommended for dev):**
+
+{lang=bash}
+```
+npx playwright test --ui
+```
+
+**Run specific test:**
+
+{lang=bash}
+```
+npx playwright test auth.spec.ts
+```
+
+**Debug mode:**
+
+{lang=bash}
+```
+npx playwright test --debug
+```
+
+## Test Structure
+
+Organize tests by feature:
+
+{lang=text}
+```
+e2e/
+  ├── auth/
+  │   ├── login.spec.ts
+  │   ├── signup.spec.ts
+  │   └── password-reset.spec.ts
+  ├── tasks/
+  │   ├── create-task.spec.ts
+  │   ├── edit-task.spec.ts
+  │   └── delete-task.spec.ts
+  ├── kanban/
+  │   ├── drag-drop.spec.ts
+  │   └── filters.spec.ts
+  └── fixtures.ts
+```
+
+## Test Database Setup
+
+**Problem:** E2E tests need real data, but you don't want to pollute production database.
+
+**Solution:** Use Supabase test projects or seed test data.
+
+**Option 1: Test Supabase project**
+
+{lang=typescript}
+```
+// playwright.config.ts
+export default defineConfig({
+  use: {
+    baseURL: process.env.CI
+      ? 'http://localhost:3000'
+      : 'http://localhost:3000',
+
+    // Use test Supabase project
+    extraHTTPHeaders: {
+      'x-test-mode': 'true',
+    },
+  },
+});
+```
+
+**Option 2: Seed and cleanup in tests**
+
+{lang=typescript}
+```
+import { test } from '@playwright/test';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY! // Server-side key
+);
+
+test.beforeEach(async () => {
+  // Create test user
+  const { data: user } = await supabase.auth.admin.createUser({
+    email: 'test@example.com',
+    password: 'password123',
+    email_confirm: true,
+  });
+
+  // Create test data
+  await supabase.from('tasks').insert([
+    { title: 'Test Task', user_id: user.id },
+  ]);
+});
+
+test.afterEach(async () => {
+  // Clean up test data
+  await supabase.from('tasks').delete().eq('user_id', testUserId);
+  await supabase.auth.admin.deleteUser(testUserId);
+});
+```
+
+## CI Integration
+
+GitHub Actions workflow (auto-generated):
+
+{lang=yaml}
+```
+# .github/workflows/playwright.yml
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ main, preview ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+```
+
+## What Tests to Write
+
+**E2E tests are expensive.** Only test critical user journeys:
+
+✅ **Write E2E tests for:**
+- Authentication flows (signup, login, logout)
+- Core user actions (create task, edit task)
+- Critical business flows (checkout, payment)
+- Features with complex UI interactions (drag-drop)
+
+❌ **Don't write E2E tests for:**
+- Individual utility functions (use unit tests)
+- Edge cases (use unit tests)
+- Every button click (use unit tests)
+
+**Rule of thumb:** If a bug would seriously harm your users, E2E test it.
+
+## Next Steps
+
+Now that Playwright is set up, learn patterns for writing maintainable E2E tests in the next chapter.
+
+T> **TDD for E2E**
+T>
+T> Yes, you can do TDD with E2E tests! Write the E2E test first (it fails), implement the feature (test passes), refactor. This ensures your features actually work end-to-end before you ship.

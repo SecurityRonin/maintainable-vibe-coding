@@ -78,6 +78,9 @@ git checkout preview
 - Infrastructure with Supabase
 - GitHub setup and workflow
 - Local development with Claude Code
+  - TDD in practice
+  - Playwright E2E testing
+  - Auto-debugging with Playwright
 - Deployment to production
 
 ### Part 3: Complete Tutorial

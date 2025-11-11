@@ -97,6 +97,9 @@ nav:
     - Project Prompts: 06-phase-4-local-development/project-prompts.md
     - Brainstorming Workflow: 06-phase-4-local-development/brainstorming-workflow.md
     - TDD in Practice: 06-phase-4-local-development/tdd-in-practice.md
+    - Playwright Setup: 06-phase-4-local-development/playwright-setup.md
+    - E2E Testing Patterns: 06-phase-4-local-development/e2e-testing-patterns.md
+    - Playwright Auto-Debugging: 06-phase-4-local-development/playwright-auto-debug.md
     - Best Practices Adoption: 06-phase-4-local-development/best-practices-adoption.md
     - Daily Workflow: 06-phase-4-local-development/daily-workflow.md
   - "Phase 5: Deployment":
