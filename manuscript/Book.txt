@@ -1,0 +1,8 @@
+frontmatter.txt
+introduction.txt
+chapter01-what-is-vibe-coding.txt
+chapter02-why-this-workflow.txt
+chapter03-what-youll-build.txt
+chapter04-prerequisites.txt
+mainmatter.txt
+backmatter.txt

@@ -1,0 +1,34 @@
+# Introduction
+
+"Move fast and break things" is dead. "Move slow and build it right" is too slow. **Vibe coding is the third way.**
+
+This book teaches you a practical workflow for shipping modern web applications fast, without accumulating technical debt. It's not about React code—it's about the **process** that lets you build maintainable software at high velocity.
+
+## What You'll Learn
+
+Throughout this book, you'll build **TaskFlow**, a complete team task management application, using five proven phases:
+
+1. **Design Phase:** Rapid prototyping with v0
+2. **Infrastructure:** Backend setup with Supabase (auth + data)
+3. **Version Control:** Professional GitHub workflow
+4. **Local Development:** Claude Code CLI with superpowers for maintainable rapid development
+5. **Deployment:** Ship to production
+
+By the end, you'll have:
+
+- Built a complete full-stack application
+- Learned to ship features in days, not weeks
+- Established patterns for maintainable codebases
+- Mastered tools that amplify your productivity
+
+## Who This Is For
+
+You'll love vibe coding if you:
+
+- Want to ship quickly but hate technical debt
+- Like AI assistance but don't trust autopilot
+- Value pragmatism over perfectionism
+- Ship side projects or production systems
+- Work solo or with a team
+
+Let's begin.

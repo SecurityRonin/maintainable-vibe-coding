@@ -22,31 +22,40 @@ By the end, you'll have:
 - Established patterns for maintainable codebases
 - Mastered tools that amplify your productivity
 
-## 🚀 Quick Start
+## 🚀 How to Get the Book
 
-### Reading Online
+### Purchase on Leanpub
 
-**Web version:** [yourdomain.com](https://yourdomain.com) (Coming soon)
+**Leanpub:** [leanpub.com/maintainable-vibe-coding](https://leanpub.com/maintainable-vibe-coding) (Coming soon)
 
-### Building Locally
+Get the complete book in PDF, EPUB, and MOBI formats. Pay what you want (minimum $9.99).
+
+**Free sample available** - First two chapters to try before you buy.
+
+### Read Online (Free)
+
+**GitHub Pages:** [securityronin.github.io/maintainable-vibe-coding](https://securityronin.github.io/maintainable-vibe-coding)
+
+Free web version with introduction chapters and tutorial overview.
+
+### Working with the Source
+
+This book is written in Leanpub Flavoured Markdown and stored in the `manuscript/` directory.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/maintainable-vibe-coding.git
+git clone https://github.com/SecurityRonin/maintainable-vibe-coding.git
 cd maintainable-vibe-coding
 
-# Install dependencies
-pip install -r requirements.txt
-
-# Run local development server
-mkdocs serve
-
-# Visit http://127.0.0.1:8000
+# View manuscript files
+ls manuscript/
 ```
 
-### Amazon Kindle
-
-Available on Amazon: [Link coming soon]
+To publish your own version:
+1. Create a Leanpub account
+2. Create a new book
+3. Connect to this GitHub repository
+4. Leanpub will build PDF/EPUB/MOBI from `manuscript/`
 
 ## 📚 Book Structure
 
@@ -114,10 +123,11 @@ Follow along building a real task management app:
 - TypeScript - Type safety
 
 **This book is built with:**
-- [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) - Documentation framework
-- Markdown - Content format
+- [Leanpub](https://leanpub.com) - Book publishing platform
+- [Leanpub Flavoured Markdown](https://leanpub.com/lfm/read) - Content format
+- [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) - Free web version
 - Loom - Video hosting
-- GitHub Pages - Web hosting
+- GitHub - Version control and Pages hosting
 
 ## 📖 Example Projects
 
@@ -150,27 +160,28 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ## 📝 Development Status
 
-**Current status:** 🚀 Foundation Complete
+**Current status:** 🚀 Leanpub Migration Complete
 
 - [x] Architecture design complete
-- [x] MkDocs configuration and structure
-- [x] Complete chapter placeholders (51 pages)
-- [x] GitHub Actions deployment workflow
+- [x] Leanpub manuscript structure
 - [x] Introduction chapters (4 complete)
-- [x] Tutorial overview complete
+- [x] Free sample configured (first 2 chapters)
+- [x] GitHub Pages for web version
+- [x] MkDocs configuration (legacy/web version)
+- [ ] Leanpub book created and published
 - [ ] Tutorial content (Steps 1-9)
 - [ ] Workflow chapters (Phases 1-5)
 - [ ] Best practices chapter
 - [ ] Advanced topics chapter
 
-**Next:** Tutorial content development (Chapter 08)
+**Next:** Create Leanpub book and publish first version
 
 **Follow development progress:** Check GitHub Issues and Pull Requests
 
 ## 📜 License
 
 ### Content License
-The book content (all markdown files in `docs/`) is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+The book content (all markdown files in `manuscript/` and `docs/`) is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
 **You are free to:**
 - Share — copy and redistribute the material
@@ -178,7 +189,7 @@ The book content (all markdown files in `docs/`) is licensed under [Creative Com
 
 **Under the following terms:**
 - Attribution — Give appropriate credit
-- NonCommercial — Not for commercial purposes
+- NonCommercial — Not for commercial purposes (does not restrict Leanpub sales by original author)
 - ShareAlike — Distribute under same license
 
 ### Code License
@@ -188,10 +199,8 @@ You are free to use the code in your own projects, commercial or otherwise.
 
 ## 👤 Author
 
-**[Your Name]**
-- Website: [yourwebsite.com]
-- Twitter: [@yourhandle]
-- GitHub: [@yourusername]
+**SecurityRonin**
+- GitHub: [@SecurityRonin](https://github.com/SecurityRonin)
 
 ## 🙏 Acknowledgments
 
@@ -205,24 +214,24 @@ This book wouldn't be possible without:
 
 ## 💬 Community
 
-- **Discussions:** [GitHub Discussions](https://github.com/yourusername/maintainable-vibe-coding/discussions)
-- **Issues:** [GitHub Issues](https://github.com/yourusername/maintainable-vibe-coding/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/SecurityRonin/maintainable-vibe-coding/discussions)
+- **Issues:** [GitHub Issues](https://github.com/SecurityRonin/maintainable-vibe-coding/issues)
 - **Twitter:** [#MaintainableVibeCoding](https://twitter.com/search?q=%23MaintainableVibeCoding)
 
 ## ⭐ Star History
 
 If this book helps you, consider starring the repository!
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/maintainable-vibe-coding&type=Date)](https://star-history.com/#yourusername/maintainable-vibe-coding&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=SecurityRonin/maintainable-vibe-coding&type=Date)](https://star-history.com/#SecurityRonin/maintainable-vibe-coding&Date)
 
 ## 📊 Stats
 
-![GitHub stars](https://img.shields.io/github/stars/yourusername/maintainable-vibe-coding?style=social)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/maintainable-vibe-coding?style=social)
-![GitHub issues](https://img.shields.io/github/issues/yourusername/maintainable-vibe-coding)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/maintainable-vibe-coding)
+![GitHub stars](https://img.shields.io/github/stars/SecurityRonin/maintainable-vibe-coding?style=social)
+![GitHub forks](https://img.shields.io/github/forks/SecurityRonin/maintainable-vibe-coding?style=social)
+![GitHub issues](https://img.shields.io/github/issues/SecurityRonin/maintainable-vibe-coding)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/SecurityRonin/maintainable-vibe-coding)
 ![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)
 
 ---
 
-**Ready to ship fast without breaking things?** [Start reading →](https://yourdomain.com)
+**Ready to ship fast without breaking things?** [Get the book on Leanpub →](https://leanpub.com/maintainable-vibe-coding)

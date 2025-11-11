@@ -1,0 +1,254 @@
+# Prerequisites
+
+Before starting, make sure you have these tools and accounts ready.
+
+## Required Accounts (All Free)
+
+### 1. GitHub Account
+**Why:** Version control and deployment automation
+
+**Sign up:** [github.com](https://github.com/signup)
+
+**What you need:** Personal account (free tier is sufficient)
+
+### 2. Vercel Account
+**Why:** Deploy Next.js applications with zero configuration
+
+**Sign up:** [vercel.com/signup](https://vercel.com/signup)
+
+**Tip:** Sign up with your GitHub account for seamless integration
+
+**What you need:** Hobby plan (free tier is sufficient)
+
+### 3. Supabase Account
+**Why:** Backend as a service (auth, database, storage, real-time)
+
+**Sign up:** [supabase.com](https://supabase.com)
+
+**What you need:** Free tier (includes 2 projects, sufficient for learning)
+
+### 4. v0 Access
+**Why:** AI-powered design tool that generates production Next.js code
+
+**Sign up:** [v0.dev](https://v0.dev)
+
+**Note:** May have waitlist or require paid plan. Check current status.
+
+### 5. Claude Code CLI
+**Why:** AI-assisted development with codebase context
+
+**Installation:** [docs.anthropic.com/claude-code](https://docs.anthropic.com/en/docs/claude-code)
+
+**What you need:** Claude Pro subscription (required for Claude Code)
+
+## Required Software
+
+### 1. Node.js 18+
+**Check version:**
+
+{lang=bash}
+```
+node --version
+```
+
+**Expected:** v18.0.0 or higher
+
+**Install:** [nodejs.org](https://nodejs.org) or use `nvm`:
+
+{lang=bash}
+```
+# Install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+# Install Node.js
+nvm install 18
+nvm use 18
+```
+
+### 2. Git
+**Check version:**
+
+{lang=bash}
+```
+git --version
+```
+
+**Expected:** Any recent version (2.x)
+
+**Install:**
+- macOS: `brew install git` or comes with Xcode
+- Linux: `sudo apt-get install git` or equivalent
+- Windows: [git-scm.com](https://git-scm.com)
+
+### 3. Text Editor
+**Recommended:** VS Code with extensions:
+- ESLint
+- Prettier
+- Tailwind CSS IntelliSense
+- GitLens
+
+**Alternatives:** Any editor works (Cursor, WebStorm, Vim, etc.)
+
+### 4. Terminal
+**macOS/Linux:** Built-in terminal is sufficient
+
+**Windows:** WSL2 recommended, or Git Bash
+
+## Required Knowledge
+
+### You Should Know
+
+✅ **JavaScript basics** - Variables, functions, arrays, objects
+
+✅ **Basic terminal usage** - cd, ls, running commands
+
+✅ **Basic git concepts** - commit, push, pull, branch (we'll teach the workflow)
+
+✅ **HTML/CSS fundamentals** - How websites are structured
+
+### You Don't Need to Know
+
+❌ **React** - We'll use Next.js, but you'll learn as you go
+
+❌ **TypeScript** - Nice to have, not required
+
+❌ **Databases** - Supabase handles SQL for you
+
+❌ **DevOps** - Vercel handles deployment
+
+❌ **Advanced git** - We use a simple workflow
+
+## Installation Checklist
+
+Before proceeding, verify everything works:
+
+### 1. Node.js Test
+
+{lang=bash}
+```
+node --version
+npm --version
+```
+
+**Expected:** Version numbers (no errors)
+
+### 2. Git Test
+
+{lang=bash}
+```
+git --version
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+```
+
+**Expected:** Version number, config set without errors
+
+### 3. GitHub CLI (Optional but Recommended)
+
+{lang=bash}
+```
+# Install
+brew install gh   # macOS
+# or download from github.com/cli/cli
+
+# Authenticate
+gh auth login
+```
+
+**Expected:** Logged in to GitHub via CLI
+
+### 4. Claude Code Test
+
+{lang=bash}
+```
+claude-code --version
+```
+
+**Expected:** Version number
+
+If not installed, follow: [docs.anthropic.com/claude-code](https://docs.anthropic.com/en/docs/claude-code)
+
+### 5. Superpowers Setup
+
+{lang=bash}
+```
+cd ~/.claude/plugins
+git clone https://github.com/obra/superpowers.git
+```
+
+**Expected:** Superpowers cloned to plugins directory
+
+**Verify:**
+
+{lang=bash}
+```
+ls ~/.claude/plugins/superpowers/skills
+```
+
+**Expected:** List of skill directories
+
+## Optional but Recommended
+
+### 1. pnpm or yarn
+**Why:** Faster than npm, smaller node_modules
+
+{lang=bash}
+```
+npm install -g pnpm
+```
+
+### 2. Supabase CLI
+**Why:** Local development, migrations
+
+{lang=bash}
+```
+npm install -g supabase
+```
+
+### 3. Vercel CLI
+**Why:** Local preview, environment management
+
+{lang=bash}
+```
+npm install -g vercel
+```
+
+## Cost Estimate
+
+Let's be transparent about costs:
+
+| Service | Free Tier | What You Get | Upgrade Cost |
+|---------|-----------|--------------|--------------|
+| **GitHub** | Free | Unlimited public/private repos | Free |
+| **Vercel** | Free | Unlimited deployments, 100GB bandwidth | $20/mo for Pro |
+| **Supabase** | Free | 2 projects, 500MB database, 1GB file storage | $25/mo per project |
+| **v0** | Varies | Check current pricing | ~$20/mo |
+| **Claude Pro** | $20/mo | Unlimited Claude access + Claude Code | Required |
+
+**Total for learning:** ~$40/mo (Claude Pro + v0 if paid)
+
+**Total for production:** Add $25/mo per Supabase project if needed
+
+**Free tier sufficient for:** Learning, side projects, low-traffic apps
+
+## Time Commitment
+
+**Setup:** 1-2 hours (one time)
+
+**Tutorial:** 6-8 hours (one weekend)
+
+**Building your own project:** 1-2 weeks
+
+## Ready?
+
+Once everything is installed and verified, you're ready to start!
+
+**Next:** Begin with the Workflow Overview or jump straight to the Complete Tutorial.
+
+W> **Blocked on v0 Access?**
+W>
+W> If you're waitlisted for v0, you can still follow along by:
+W>
+W> 1. Using the provided v0 exports in the tutorial
+W> 2. Learning the workflow with provided code
+W> 3. Getting v0 access later and repeating with your own designs
