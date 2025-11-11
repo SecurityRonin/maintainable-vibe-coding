@@ -1,17 +1,213 @@
 # What You'll Build
 
-!!! warning "Work in Progress"
-    This chapter is currently being written. Check back soon!
+Throughout this book, you'll build **TaskFlow**, a complete team task management application. Here's what it looks like and how it works.
 
-## Coming Soon
+## TaskFlow: Team Task Management
 
-This section will cover:
+**Live Demo:** [taskflow-tutorial.vercel.app](https://taskflow-tutorial.vercel.app)
 
-- Key concepts
-- Practical examples
-- Step-by-step instructions
-- Common pitfalls to avoid
+**Source Code:** [github.com/yourusername/taskflow-tutorial](https://github.com/yourusername/taskflow-tutorial)
+
+## Features
+
+### User Authentication
+- Email/password sign up and login
+- Magic link authentication
+- Social auth (Google, GitHub)
+- Password reset flow
+- Session management
+
+### Task Management
+- Create, edit, delete tasks
+- Assign tasks to team members
+- Set priorities (low, medium, high, urgent)
+- Add labels and tags
+- Rich text descriptions
+- File attachments
+
+### Real-Time Collaboration
+- See team members' changes instantly
+- Live presence indicators
+- Optimistic UI updates
+- Conflict resolution
+
+### Organization
+- Kanban board view
+- List view
+- Calendar view
+- Filters and search
+- Bulk operations
+
+### Dashboard
+- Task statistics
+- Team activity feed
+- Personal task summary
+- Upcoming deadlines
+
+## Technical Showcase
+
+TaskFlow demonstrates every aspect of the workflow:
+
+### From v0
+- Responsive dashboard layout
+- Drag-and-drop kanban board
+- Modal forms and dialogs
+- Empty states and loading states
+- Mobile-first design
+
+### From Supabase
+- Email/password authentication
+- OAuth providers
+- PostgreSQL database with proper indexing
+- Row Level Security for data isolation
+- Real-time subscriptions
+- File storage for attachments
+
+### From GitHub Workflow
+- Feature branch development
+- Pull request reviews
+- GitHub Actions CI/CD
+- Automated deployments
+- Version tagging
+
+### From Claude Code + Superpowers
+- TDD implementation of auth flows
+- Brainstormed feature architecture
+- Systematic debugging
+- Code review workflows
+- Refactoring with confidence
+
+### From Vercel Deployment
+- Automatic preview deployments
+- Environment variable management
+- Edge functions for API routes
+- Analytics and monitoring
+- Zero-downtime deploys
+
+## Project Structure
+
+```
+taskflow/
+├── .github/
+│   └── workflows/
+│       └── ci.yml              # GitHub Actions
+├── .claude/
+│   └── project-prompt.md       # Claude Code configuration
+├── src/
+│   ├── app/                    # Next.js 13+ app directory
+│   │   ├── (auth)/            # Auth routes
+│   │   ├── (dashboard)/       # Protected routes
+│   │   └── api/               # API routes
+│   ├── components/
+│   │   ├── ui/                # Shadcn components
+│   │   ├── tasks/             # Task-specific components
+│   │   └── layout/            # Layout components
+│   ├── lib/
+│   │   ├── supabase/          # Supabase client & types
+│   │   ├── hooks/             # Custom React hooks
+│   │   └── utils/             # Utility functions
+│   └── tests/
+│       ├── unit/              # Unit tests
+│       ├── integration/       # Integration tests
+│       └── e2e/               # End-to-end tests
+├── supabase/
+│   ├── migrations/            # Database migrations
+│   └── seed.sql               # Seed data
+├── public/                     # Static assets
+└── docs/                       # Project documentation
+```
+
+## Development Timeline
+
+Building TaskFlow following this workflow takes:
+
+**Week 1 (MVP):**
+- Day 1: v0 design + Supabase setup (2-3 hours)
+- Day 2: GitHub + local setup + auth (2-3 hours)
+- Day 3-4: Core task CRUD (4-5 hours)
+- Day 5: Kanban board + drag-drop (2-3 hours)
+- Day 6: Polish + deployment (2 hours)
+
+**Total MVP:** 15-18 hours over 6 days
+
+**Week 2 (Full features):**
+- Real-time collaboration
+- File attachments
+- Advanced filters
+- Team management
+- Analytics dashboard
+
+**Total Production-Ready:** 30-35 hours over 2 weeks
+
+Compare this to traditional development:
+- Design in Figma: 2-3 days
+- Implement design: 5-7 days
+- Build backend: 7-10 days
+- Testing: 3-5 days
+- Deployment setup: 1-2 days
+
+**Traditional timeline:** 4-6 weeks for the same result
+
+## What You'll Learn
+
+By building TaskFlow, you'll master:
+
+### Technical Skills
+- Next.js 13+ app directory
+- Shadcn UI components
+- Supabase client & RLS
+- Real-time subscriptions
+- TypeScript best practices
+- Testing strategies
+
+### Workflow Skills
+- Design-first development
+- TDD in practice
+- AI-assisted coding
+- Git workflow
+- Continuous deployment
+- Production monitoring
+
+### Decision-Making
+- When to use v0 vs custom code
+- How to structure Supabase schemas
+- Where to add tests
+- When to refactor
+- How to debug with Claude Code
+
+## After TaskFlow
+
+Once you complete TaskFlow, you'll be able to:
+
+✅ Ship new projects in days, not months
+
+✅ Add features without breaking existing ones
+
+✅ Onboard teammates quickly
+
+✅ Refactor with confidence
+
+✅ Handle production issues calmly
+
+✅ Build side projects that you actually finish
+
+## Variations
+
+The tutorial builds TaskFlow, but you can apply this to:
+
+- **SaaS products** - Subscription management, billing, analytics
+- **Internal tools** - Admin dashboards, data entry, reporting
+- **E-commerce** - Product catalogs, checkout, inventory
+- **Social apps** - Feeds, comments, notifications
+- **Content platforms** - Publishing, moderation, search
+
+The workflow works for any web application.
+
+## Next
+
+Make sure you have the prerequisites. Continue to [Prerequisites](prerequisites.md).
 
 ---
 
-**Want to contribute?** See [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines.
+!!! tip "Real Complexity"
+    TaskFlow isn't a toy example. It has real-world complexity: auth, permissions, real-time, file uploads, testing. That's intentional. You'll learn patterns that scale.
