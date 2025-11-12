@@ -2,258 +2,270 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/CONTRIBUTING/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/deployment/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/01-introduction/prerequisites/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/01-introduction/what-is-vibe-coding/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/01-introduction/what-youll-build/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/01-introduction/why-this-workflow/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/02-workflow-overview/the-five-phases/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/02-workflow-overview/tooling-philosophy/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/02-workflow-overview/why-this-order/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/03-phase-1-design-with-v0/common-patterns/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/03-phase-1-design-with-v0/creating-your-first-design/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/03-phase-1-design-with-v0/exporting-to-code/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/03-phase-1-design-with-v0/getting-started/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/03-phase-1-design-with-v0/intro/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/03-phase-1-design-with-v0/iterating-quickly/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/04-phase-2-infrastructure-supabase/authentication/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/04-phase-2-infrastructure-supabase/best-practices/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/04-phase-2-infrastructure-supabase/connecting-to-frontend/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/04-phase-2-infrastructure-supabase/database-setup/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/04-phase-2-infrastructure-supabase/intro/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/04-phase-2-infrastructure-supabase/project-setup/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/05-phase-3-github-setup/branching-strategy/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/05-phase-3-github-setup/github-actions-basics/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/05-phase-3-github-setup/initial-commit/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/05-phase-3-github-setup/intro/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/05-phase-3-github-setup/repository-creation/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/06-phase-4-local-development/best-practices-adoption/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/06-phase-4-local-development/brainstorming-workflow/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/06-phase-4-local-development/claude-code-installation/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/06-phase-4-local-development/daily-workflow/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
+    </url>
+    <url>
+         <loc>https://yourusername.github.io/maintainable-vibe-coding/06-phase-4-local-development/e2e-testing-patterns/</loc>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/06-phase-4-local-development/intro/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
+    </url>
+    <url>
+         <loc>https://yourusername.github.io/maintainable-vibe-coding/06-phase-4-local-development/playwright-auto-debug/</loc>
+         <lastmod>2025-11-12</lastmod>
+    </url>
+    <url>
+         <loc>https://yourusername.github.io/maintainable-vibe-coding/06-phase-4-local-development/playwright-setup/</loc>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/06-phase-4-local-development/project-prompts/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/06-phase-4-local-development/superpowers-setup/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/06-phase-4-local-development/tdd-in-practice/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/07-phase-5-deployment/environment-setup/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/07-phase-5-deployment/intro/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/07-phase-5-deployment/monitoring/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/07-phase-5-deployment/vercel-deployment/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/08-complete-tutorial/01-design-phase/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/08-complete-tutorial/02-supabase-setup/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/08-complete-tutorial/03-github-init/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/08-complete-tutorial/04-clone-and-setup/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/08-complete-tutorial/05-claude-brainstorming/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/08-complete-tutorial/06-implementing-auth/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/08-complete-tutorial/07-building-features/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/08-complete-tutorial/08-deployment/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/08-complete-tutorial/09-iteration/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/08-complete-tutorial/overview/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/09-best-practices/common-patterns/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/09-best-practices/debugging-workflow/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/09-best-practices/performance-tips/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/09-best-practices/project-prompt-templates/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/09-best-practices/superpowers-skills-guide/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/10-advanced-topics/cost-optimization/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/10-advanced-topics/custom-superpowers-skills/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/10-advanced-topics/monorepo-setup/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/10-advanced-topics/team-workflows/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/11-conclusion/contributing/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/11-conclusion/next-steps/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/11-conclusion/resources/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/11-conclusion/what-you-learned/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/plans/2025-11-11-book-architecture-design/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
     <url>
          <loc>https://yourusername.github.io/maintainable-vibe-coding/plans/2025-11-11-book-project-implementation/</loc>
-         <lastmod>2025-11-11</lastmod>
+         <lastmod>2025-11-12</lastmod>
     </url>
 </urlset>
