@@ -1,27 +1,23 @@
 # Chapter 12: Creating Implementation Plan
 
-You have architecture. Now break it into tasks.
+Break architecture into tasks.
 
-**Time required:** 20 minutes
+**Time:** 20 minutes
 
-**What you'll get:** Implementation plan with 15-25 bite-sized tasks, each taking 2-5 minutes.
-
----
+**What you'll get:** 15-25 bite-sized tasks, each 2-5 minutes.
 
 ## The Writing-Plans Skill
 
-You'll use the `writing-plans` skill from Superpowers. It creates detailed implementation plans.
+Use the `writing-plans` skill from Superpowers.
 
-**The skill will:**
-- Break your architecture into tasks
+**It will:**
+- Break architecture into tasks
 - Include exact file paths
-- Provide complete code (not "add auth here")
-- Specify TDD approach for each task
+- Provide complete code
+- Specify TDD approach
 - Include verification steps
 
----
-
-## Copy and Paste This Exact Prompt
+## Copy This Exact Prompt
 
 In Claude Code (still open from Chapter 11):
 
@@ -47,47 +43,37 @@ Follow TDD throughout: write failing test → minimal code → refactor.
 
 Press Enter.
 
-![Screenshot: Writing plans prompt](#placeholder-writing-plans-prompt)
+## What Happens
 
----
+Claude reads your design document.
 
-## What Happens Next
+Creates task breakdown.
 
-Claude reads your design document from Chapter 11.
-
-Then creates a task breakdown.
-
-**This takes about 15-20 minutes.**
-
-You don't need to do anything - the skill works automatically.
-
----
+Takes 15-20 minutes automatically.
 
 ## The Implementation Plan
 
-Claude creates:
+Claude creates: `docs/plans/YYYY-MM-DD-readstack-implementation.md`
 
-`docs/plans/YYYY-MM-DD-readstack-implementation.md`
+**Each task has:**
+- Files to create/modify
+- Test code (write first)
+- Implementation code (complete)
+- Verification steps
+- Git commit message
 
-**Structure:**
+**Example task:**
 
 ### Task 1: Set up Supabase client
 
-**Files:**
-- `lib/supabase/client.ts`
-- `lib/supabase/server.ts`
-- `middleware.ts`
+**Files:** `lib/supabase/client.ts`
 
 **Test first:**
 ```typescript
 // __tests__/lib/supabase/client.test.ts
-import { createClient } from '@/lib/supabase/client'
-
-describe('Supabase Client', () => {
-  it('creates client with environment variables', () => {
-    const client = createClient()
-    expect(client).toBeDefined()
-  })
+it('creates client with environment variables', () => {
+  const client = createClient()
+  expect(client).toBeDefined()
 })
 ```
 
@@ -104,80 +90,28 @@ export function createClient() {
 }
 ```
 
-**Verify:**
-```bash
-npm test -- client.test.ts
-```
+**Verify:** `npm test -- client.test.ts` → Test passes
 
-Expected: Test passes
+**Commit:** `git commit -m "feat: add Supabase client setup"`
 
-**Commit:**
-```bash
-git add lib/ __tests__/
-git commit -m "feat: add Supabase client setup"
-```
+15-25 tasks like this.
 
-### Task 2: Implement email/password authentication
-
-**Files:**
-- `app/actions/auth.ts`
-- `__tests__/app/actions/auth.test.ts`
-
-**Test first:**
-```typescript
-describe('Authentication', () => {
-  it('signs up user with email and password', async () => {
-    const result = await signUp('test@example.com', 'password123')
-    expect(result.error).toBeNull()
-    expect(result.data.user).toBeDefined()
-  })
-})
-```
-
-**Implementation:**
-```typescript
-// app/actions/auth.ts
-'use server'
-
-import { createClient } from '@/lib/supabase/server'
-
-export async function signUp(email: string, password: string) {
-  const supabase = createClient()
-  return await supabase.auth.signUp({ email, password })
-}
-```
-
-**Continue for 15-25 tasks...**
-
-![Screenshot: Implementation plan document](#placeholder-impl-plan)
-
----
-
-## Review Your Implementation Plan
+## Review
 
 ```bash
 cat docs/plans/YYYY-MM-DD-readstack-implementation.md
 ```
 
-**Check that each task has:**
-- Clear objective ("Implement X")
-- Exact files to modify
-- Test code (what to write first)
-- Implementation code (complete, not partial)
-- Verification steps (how to confirm it works)
-- Git commit message
+Check each task has:
+- Clear objective
+- Exact files
+- Test code
+- Implementation code
+- Verification steps
 
-If anything is unclear, ask Claude:
+If unclear, ask Claude.
 
-```
-In Task 7, what does "optimistic update" mean?
-```
-
-Claude will explain.
-
----
-
-## Commit Your Plan
+## Commit
 
 ```bash
 git add docs/
@@ -191,108 +125,41 @@ git commit -m "docs: add ReadStack implementation plan
 Created using writing-plans skill"
 ```
 
----
+## What Just Happened
 
-## What Just Happened?
-
-**You spent 20 minutes creating a plan:**
+20 minutes creating plan:
 - 15-25 tasks defined
-- Each task is 2-5 minutes
-- All code provided (not abstractions)
-- TDD enforced (test first, always)
-- Verification steps included
+- Each 2-5 minutes
+- All code provided
+- TDD enforced
+- Verification included
 
-**You still haven't written any code.**
+**Still no code written.**
 
-But now implementation is trivial - just follow the plan task by task.
+But implementation is now trivial - just follow the plan.
 
----
+## Why This Works
 
-## Time Check
-
-**Planned:** 20 minutes
-
-**Actual:** Probably 15-25 minutes
-
-The skill works automatically. Most of the time is Claude generating the detailed plan.
-
----
-
-## Understanding the Plan Structure
-
-### Why tasks are small (2-5 min each)
-
-Large tasks are overwhelming. Small tasks are achievable.
-
-**Bad task:** "Implement authentication" (60 minutes, complex)
-
-**Good tasks:**
+**Small tasks (2-5 min each):**
+Instead of "Implement authentication" (60 min, overwhelming), you get:
 1. Set up Supabase client (3 min)
 2. Create auth actions (4 min)
 3. Wire up signup form (3 min)
 4. Wire up login form (3 min)
-5. Add logout functionality (2 min)
-6. Implement password reset (5 min)
+5. Add logout (2 min)
+6. Password reset (5 min)
 
-Same work, but broken into pieces. Each piece has a clear win.
+Same work, achievable pieces, clear wins.
 
-### Why complete code is included
+**Complete code included:**
+No guessing. Just copy.
 
-**Bad plan:** "Add validation to the signup form"
+**TDD enforced:**
+Test first → Implementation → Refactor
+Tests actually validate (they failed first).
 
-You have to figure out what validation, how to implement it, what error messages, etc.
+## Next
 
-**Good plan:**
-```typescript
-// Add this to app/(auth)/signup/actions.ts
-export async function validateSignup(email: string, password: string) {
-  if (!email.includes('@')) {
-    return { error: 'Invalid email format' }
-  }
-  if (password.length < 8) {
-    return { error: 'Password must be at least 8 characters' }
-  }
-  return { error: null }
-}
-```
+Chapter 13 - Designing UI with v0 (20 min)
 
-No decisions needed. Just copy the code.
-
-### Why TDD is enforced
-
-**Test first approach:**
-1. Write test (it fails - RED)
-2. Write minimal code (test passes - GREEN)
-3. Refactor if needed (test still passes)
-
-This ensures:
-- Tests actually validate something (they failed first)
-- No untested code
-- Bugs caught immediately
-
-**The plan includes tests for every task.**
-
----
-
-## What You Learned
-
-- Writing-plans skill breaks architecture into tasks
-- Each task is 2-5 minutes (small wins)
-- Complete code included (no guessing)
-- TDD enforced throughout
-- 20 minutes planning = clear roadmap
-
-**What you have:**
-- Architecture design (Chapter 11)
-- Implementation plan (this chapter)
-- 15-25 tasks ready to execute
-- All committed to git
-
-**What you don't have yet:**
-- UI designs (coming in Chapter 13)
-- Database created (Chapter 14)
-- Any implementation (Chapter 15)
-
-**Next:** Chapter 13 - Designing UI with v0 (20 min)
-
-You'll generate beautiful components without writing CSS or JSX manually.
+Generate beautiful components without writing CSS or JSX manually.
