@@ -40,3 +40,7 @@ site/
 # Environment variables
 .env
 .env.local
+
+# macOS system files (all variants)
+**/.DS_Store
+**/.!*!.DS_Store
